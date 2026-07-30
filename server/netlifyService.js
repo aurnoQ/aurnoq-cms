@@ -29,18 +29,25 @@ export async function deployToNetlify(html, { token = process.env.NETLIFY_AUTH_T
   if (!token || !siteId) throw new Error('Netlify is not configured. Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID.');
 
   const contents = Buffer.from(html, 'utf8');
-  const sha1 = createHash('sha1').update(contents).digest('hex');
+  const headersContents = Buffer.from('/index.html\n  Content-Type: text/html; charset=UTF-8\n', 'utf8');
+  const files = {
+    '/index.html': createHash('sha1').update(contents).digest('hex'),
+    '/_headers': createHash('sha1').update(headersContents).digest('hex'),
+  };
   const deploy = await netlifyRequest(`${NETLIFY_API}/sites/${siteId}/deploys`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ files: { '/index.html': sha1 } }),
+    body: JSON.stringify({ files }),
   }, token);
 
-  if (deploy.required?.includes(sha1)) {
-    await netlifyRequest(`${NETLIFY_API}/deploys/${deploy.id}/files/index.html`, {
+  const uploadFiles = { 'index.html': contents, _headers: headersContents };
+  for (const [filePath, fileContents] of Object.entries(uploadFiles)) {
+    const fileHash = files[`/${filePath}`];
+    if (!deploy.required?.includes(fileHash)) continue;
+    await netlifyRequest(`${NETLIFY_API}/deploys/${deploy.id}/files/${filePath}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/octet-stream' },
-      body: contents,
+      body: fileContents,
     }, token);
   }
 
