@@ -1,0 +1,6 @@
+{
+  "name": "Dental Clinic",
+  "fields": [
+    { "id": "BUSINESS_NAME", "label": "Clinic Name", "type": "text", "required": true }
+  ]
+}
