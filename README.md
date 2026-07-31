@@ -1,6 +1,6 @@
 # AurnoQ CMS
 
-Internal template-driven website generator using React, Vite, Tailwind CSS, Express, the filesystem, and Netlify.
+Internal template-driven website generator using React, Vite, Tailwind CSS, Express, the filesystem, and Vercel.
 
 ## Run locally
 
@@ -24,9 +24,9 @@ templates/
 
 `config.json` defines the dropdown label and generated form fields. HTML can use any matching placeholder, such as `{{BUSINESS_NAME}}`, `{{PHONE}}`, or `{{PRIMARY_COLOR}}`. The CMS discovers the folder automatically.
 
-## Netlify deployment
+## Vercel deployment
 
-Copy `.env.example` to `.env` and provide `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` before using Deploy.
+Copy `.env.example` to `.env` and provide `VERCEL_TOKEN` and `VERCEL_PROJECT_ID` before using Deploy.
 
 ## API
 
